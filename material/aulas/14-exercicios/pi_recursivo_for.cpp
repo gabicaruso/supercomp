@@ -12,6 +12,8 @@ void pi_r(long Nstart, long Nfinish, double step)
     long i, iblk;
     if (Nfinish - Nstart < MIN_BLK)
     {
+#pragma omp parallel for reduction(+ \
+                                   : sum)
         for (i = Nstart; i < Nfinish; i++)
         {
             double x = (i + 0.5) * step;
