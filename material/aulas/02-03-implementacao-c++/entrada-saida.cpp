@@ -2,8 +2,8 @@
 
 int main()
 {
-    int a;
-    double b;
-    std::cin >> a >> b;
-    std::cout << "Saída: " << a << ";" << b << "\n";
+    int n;
+    std::cin >> n;
+    double n_double = (double) n / 2;
+    std::cout << "Saída: " << n_double << "\n";
 }
