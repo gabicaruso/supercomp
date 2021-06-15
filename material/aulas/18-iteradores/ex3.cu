@@ -6,16 +6,17 @@
 
 int main() {
     int N = 2518;
-    thrust::device_vector<double> stocks, ganho_diario(N-1, 0);
+    thrust::host_vector<double> stocks_cpu;
     double stks;
 
     for (int i = 0; i < N; i++)
     {
         std::cin >> stks;
-        stocks.push_back(stks);
+        stocks_cpu.push_back(stks);
     }
 
-    thrust::transform(stocks.begin() + 1, stocks.end(), stocks.begin(), ganho_diario.begin(), thrust::minus<double>());
+    thrust::device_vector<double> stocks_gpu(stocks_cpu), ganho_diario(N-1, 0);
+    thrust::transform(stocks_gpu.begin() + 1, stocks_gpu.end(), stocks_gpu.begin(), ganho_diario.begin(), thrust::minus<double>());
 
     // std::cout << "Device vector stocks:" << "\n";
     // for (auto i = stocks.begin(); i != stocks.end(); i++)

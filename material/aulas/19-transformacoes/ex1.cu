@@ -4,26 +4,24 @@
 #include <thrust/transform.h>
 #include <iostream>
 
-struct sub
-{
-    __host__ __device__
-    double operator()(const double& x, const double& y) {
-        return x - y;
-    }
-};
+// struct sub
+// {
+//     __host__ __device__
+//     double operator()(const double& x, const double& y) {
+//         return x - y;
+//     }
+// };
 
 // struct media
 // {
 //     int N;
-//     double *aapl, *msft;
-//     thrust::device_vector<double> aapl_gpu(aapl, aapl + N);
-//     thrust::device_vector<double> msft_gpu(msft, msft + N);
+//     double *AAPL, *MSFT;
 
-//     media(int n, double aapl, double msft): N(n), aapl(n), msft(n){};
+//     media(int n, double *aapl, double *msft): N(n), AAPL(aapl), MSFT(msft){};
 //     // media(int n, double aapl, double msft): N(n), aapl_gpu(n), msft_gpu(n){};
 //     __host__ __device__
-//     double operator()(const double& aapl, const double& msft) {
-//         return (aapl - msft) / N;
+//     double operator()(const double& x) {
+//         return (AAPL[x] - MSFT[x]) / N;
 //     }
 // };
 
@@ -51,17 +49,21 @@ int main() {
         MSFT.push_back(stocks_MSFT);
     }
 
-    // thrust::transform(AAPL.begin(), AAPL.end(), MSFT.begin(), MEAN_DIF.begin(), thrust::minus<double>());
-    // double sum = thrust::reduce(MEAN_DIF.begin(), MEAN_DIF.end(), 0.0, thrust::plus<double>());
-    // double mean = sum/N;
-
-    // double mean = thrust::transform_reduce(AAPL.begin(), AAPL.end(), MSFT.begin(), media(N), 0.0, thrust::plus<double>()); ?
-    
-    thrust::transform(AAPL.begin(), AAPL.end(), MSFT.begin(), MEAN_DIF.begin(), sub());
+    thrust::transform(AAPL.begin(), AAPL.end(), MSFT.begin(), MEAN_DIF.begin(), thrust::minus<double>());
     double sum = thrust::reduce(MEAN_DIF.begin(), MEAN_DIF.end(), 0.0, thrust::plus<double>());
     double mean = sum/N;
+
+    // double mean = thrust::transform_reduce(AAPL.begin(), AAPL.end(), MSFT.begin(), media(N), 0.0, thrust::plus<double>()); ?
+
+    // thrust::transform(thrust::make_counting_iterator<int>(0),thrust::make_counting_iterator<int>(N * iter), objs.begin(), copyPaste(N, objects_gpu.data().get()));
+
+    // thrust::transform(AAPL.begin(), AAPL.end(), MSFT.begin(), MEAN_DIF.begin(), sub());
+    // double sum = thrust::reduce(MEAN_DIF.begin(), MEAN_DIF.end(), 0.0, thrust::plus<double>());
+    // double mean = sum/N;
     std::cout << "Média: " << fabs(mean) << "\n";
 
+    // double mean = thrust::transform_reduce(MEAN_DIF.begin(), MEAN_DIF.begin(), MEAN_DIF.begin(), media(N, AAPL.data().get(), MSFT.data().get()), 0.0, thrust::plus<double>());
+    // std::cout << "Média: " << fabs(mean) << "\n";
 
     // thrust::transform(MEAN_DIF.begin(), MEAN_DIF.end(), thrust::constant_iterator<double>(mean), VAR_DIF.begin(), thrust::minus<double>());
     // thrust::transform(VAR_DIF.begin(), VAR_DIF.end(), VAR_DIF.begin(), VAR_DIF.begin(), thrust::multiplies<double>());
