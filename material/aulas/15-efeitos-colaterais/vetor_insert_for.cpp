@@ -13,11 +13,11 @@ int main()
 {
 	int N = 10;
 	std::vector<double> vec;
-#pragma omp parallel for default(none) shared(vec) firstprivate(N)
+	#pragma omp parallel for default(none) shared(vec) firstprivate(N)
 	for (int i = 0; i < N; i++)
 	{
 		int cc = conta_complexa(i);
-#pragma omp critical
+		#pragma omp critical
 		{
 			vec.push_back(cc);
 		}

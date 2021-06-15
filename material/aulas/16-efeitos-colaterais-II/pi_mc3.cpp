@@ -18,18 +18,15 @@ int main()
     std::default_random_engine generator(seed);
     std::uniform_real_distribution<double> distribution(0, 1);
 
-    #pragma omp parallel for reduction(+ : sum)
+    #pragma omp parallel for reduction(+ : sum) default(none) firstprivate(N) shared(distribution, generator)
     for (long i = 0; i < N; i++)
     {
-        #pragma omp critical
-        {
-            double rnd_numX = distribution(generator);
-            double rnd_numY = distribution(generator);
+        double rnd_numX = distribution(generator);
+        double rnd_numY = distribution(generator);
 
-            if (rnd_numX * rnd_numX + rnd_numY * rnd_numY <= 1)
-            {
-                sum++;
-            }
+        if (rnd_numX * rnd_numX + rnd_numY * rnd_numY <= 1)
+        {
+            sum++;
         }
     }
 

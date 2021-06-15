@@ -10,21 +10,27 @@ int main()
 {
     long N = 10000000;
     long sum = 0;
-
-    #pragma omp parallel default(none) shared(sum) firstprivate(N)
+    int seed = 10000;
+    if (getenv("SEED"))
     {
-        int id = omp_get_thread_num();
-        int n_threads = omp_get_num_threads();
+        seed = atoi(getenv("SEED"));
+    }
 
-        std::default_random_engine generator(id * 137321);
-        std::uniform_real_distribution<double> distribution(0, 1);
+    #pragma omp parallel default(none) shared(sum) firstprivate(N, seed)
+    {
+        int thread_atual = omp_get_thread_num();
+        int nthreads = omp_get_num_threads();
 
-        long chunk_size = N / n_threads;
-        long start = id * chunk_size;
-        long end = (id + 1) * chunk_size;
+        std::default_random_engine generator(thread_atual * seed);
+        std:: uniform_real_distribution<double> distribution(0, 1);
+
+        long chunk_size = N / nthreads;
+        long start = thread_atual * chunk_size;
+        long end = (thread_atual + 1) * chunk_size;
+        if(end > N) end = N;
 
         double local_sum = 0;
-        for (long i = start; i < end; i++)
+        for(int i = start; i < end; i++)
         {
             double rnd_numX = distribution(generator);
             double rnd_numY = distribution(generator);

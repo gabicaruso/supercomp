@@ -1,33 +1,31 @@
 #include <iostream>
 #include <chrono>
+#include <omp.h>
 
 static long num_steps = 1000000000;
 double step;
 
-int main()
-{
-    double pi, res_parte1 = 0.0, res_parte2 = 0.0, sum = 0.0;
+int main() {
+    int i;
+    double x, pi, sum = 0.0, res_parte1 = 0.0, res_parte2 = 0.0;
     step = 1.0 / (double)num_steps;
 
     auto start_time = std::chrono::high_resolution_clock::now();
-
     #pragma omp parallel
     {
-        #pragma omp master
+        #pragma omp master 
         {
-            #pragma omp task
+            #pragma omp task 
             {
-                for (int i = 0; i < num_steps / 2; i++)
-                {
-                    double x = (i + 0.5) * step;
+                for (i = 0; i < num_steps/2; i++) {
+                    x = (i + 0.5) * step;
                     res_parte1 = res_parte1 + 4.0 / (1.0 + x * x);
                 }
             }
-            #pragma omp task
+            #pragma omp task 
             {
-                for (int i = num_steps / 2; i < num_steps; i++)
-                {
-                    double x = (i + 0.5) * step;
+                for (i = num_steps/2; i < num_steps; i++) {
+                    x = (i + 0.5) * step;
                     res_parte2 = res_parte2 + 4.0 / (1.0 + x * x);
                 }
             }
@@ -37,8 +35,8 @@ int main()
     sum = res_parte1 + res_parte2;
     pi = step * sum;
     auto end_time = std::chrono::high_resolution_clock::now();
-    auto runtime = std::chrono::duration_cast<std::chrono::seconds>(end_time - start_time);
-
+    auto runtime = std::chrono::duration_cast<std::chrono::seconds> (end_time - start_time);
+    
     std::cout << "O valor de pi calculado com " << num_steps << " passos levou ";
     std::cout << runtime.count() << " segundo(s) e chegou no valor : ";
     std::cout.precision(17);

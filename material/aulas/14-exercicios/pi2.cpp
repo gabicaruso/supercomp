@@ -10,33 +10,14 @@ double sum = 0;
 void pi_r(long Nstart, long Nfinish, double step)
 {
     long i, iblk;
-    double res_parte1 = 0.0, res_parte2 = 0.0;
-
     if (Nfinish - Nstart < MIN_BLK)
     {
-        #pragma omp parallel
+        #pragma omp parallel for reduction(+ : sum)
+        for (i = Nstart; i < Nfinish; i++)
         {
-            #pragma omp master
-            {
-                #pragma omp task
-                {
-                    for (long i = Nstart; i < (Nstart + Nfinish) / 2; i++)
-                    {
-                        double x = (i + 0.5) * step;
-                        res_parte1 += 4.0 / (1.0 + x * x);
-                    }
-                }
-                #pragma omp task
-                {
-                    for (long i = (Nstart + Nfinish) / 2; i < Nfinish; i++)
-                    {
-                        double x = (i + 0.5) * step;
-                        res_parte2 += 4.0 / (1.0 + x * x);
-                    }
-                }
-            }
+            double x = (i + 0.5) * step;
+            sum += 4.0 / (1.0 + x * x);
         }
-        sum += res_parte1 + res_parte2;
     }
     else
     {

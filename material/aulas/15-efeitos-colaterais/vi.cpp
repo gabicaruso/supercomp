@@ -1,6 +1,7 @@
 #include <vector>
 #include <iostream>
 #include <unistd.h>
+#include <omp.h>
 
 double conta_complexa(int i)
 {
@@ -9,7 +10,7 @@ double conta_complexa(int i)
 
 int main()
 {
-    int N = 10000;
+    int N = 10;
     std::vector<double> vec;
     for (int i = 0; i < N; i++)
     {
@@ -18,7 +19,7 @@ int main()
 
     for (int i = 0; i < N; i++)
     {
-        std::cout << i << " ";
+        std::cout << vec[i] << " ";
     }
     std::cout << "\n";
 

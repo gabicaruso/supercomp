@@ -20,17 +20,17 @@ double pi_r(long Nstart, long Nfinish, double step)
     else
     {
         long iblk = Nfinish - Nstart;
-#pragma omp task shared(sum1)
+        #pragma omp task shared(sum1)
         {
             sum1 = pi_r(Nstart, Nfinish - iblk / 2, step);
         }
 
-#pragma omp task shared(sum2)
+        #pragma omp task shared(sum2)
         {
             sum2 = pi_r(Nfinish - iblk / 2, Nfinish, step);
         }
 
-#pragma omp taskwait
+        #pragma omp taskwait
         sum = sum1 + sum2;
     }
     return sum;
@@ -43,9 +43,9 @@ int main()
     double init_time, final_time;
     step = 1.0 / (double)num_steps;
     init_time = omp_get_wtime();
-#pragma omp parallel
+        #pragma omp parallel
     {
-#pragma omp master
+        #pragma omp master
         {
             sum = pi_r(0, num_steps, step);
         }

@@ -17,8 +17,7 @@ int main()
 
     std::uniform_real_distribution<double> distribution(0, 1);
 
-#pragma omp parallel for reduction(+ \
-                                   : sum)
+    #pragma omp parallel for reduction(+ : sum)
     for (long i = 0; i < N; i++)
     {
         seed = i;
@@ -29,7 +28,7 @@ int main()
 
         if (rnd_numX * rnd_numX + rnd_numY * rnd_numY <= 1)
         {
-#pragma omp critical
+            #pragma omp critical
             {
                 sum++;
             }

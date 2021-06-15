@@ -1,0 +1,30 @@
+#include <vector>
+#include <iostream>
+#include <unistd.h>
+#include <omp.h>
+
+double conta_complexa(int i)
+{
+    return 2 * i;
+}
+
+int main()
+{
+    int N = 10;
+    std::vector<double> vec;
+    #pragma omp parallel for default(none) shared(vec) firstprivate(N)
+    for (int i = 0; i < N; i++) {
+        #pragma omp critical
+        {
+            vec.push_back(conta_complexa(i));
+        }
+    }
+
+    for (int i = 0; i < N; i++)
+    {
+        std::cout << vec[i] << " ";
+    }
+    std::cout << "\n";
+
+    return 0;
+}
